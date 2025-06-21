@@ -1,0 +1,38 @@
+import pandas as pd
+
+# Load the dataset (adjust path if needed)
+df = pd.read_csv("marketing_campaign (1).csv", sep="\t")
+
+# 1. Check and handle missing values
+missing_summary = df.isnull().sum()
+df = df.dropna()  # or use df.fillna() if imputing is preferred
+
+# 2. Remove duplicates
+df = df.drop_duplicates()
+
+# 3. Standardize text columns
+df['Education'] = df['Education'].str.lower().str.strip()
+df['Marital_Status'] = df['Marital_Status'].str.lower().str.strip()
+
+# 4. Convert date columns to consistent format
+df['Dt_Customer'] = pd.to_datetime(df['Dt_Customer'], dayfirst=True)
+
+# 5. Rename columns
+df.columns = df.columns.str.lower().str.replace(" ", "_")
+
+# 6. Fix data types
+df['income'] = pd.to_numeric(df['income'], errors='coerce')
+df['kidhome'] = df['kidhome'].astype(int)
+df['teenhome'] = df['teenhome'].astype(int)
+
+# Export cleaned dataset
+df.to_csv("cleaned_marketing_campaign.csv", index=False)
+
+# Display summary
+print("Cleaning Summary:")
+print("- Missing values removed")
+print("- Duplicates dropped")
+print("- Text values standardized")
+print("- Dates converted")
+print("- Column names cleaned")
+print("- Data types corrected")
